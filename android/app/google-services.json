@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "126806768391",
+    "project_id": "whispermind-fd660",
+    "storage_bucket": "whispermind-fd660.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:126806768391:android:a3f95dc9edba2f9483a3a2",
+        "android_client_info": {
+          "package_name": "com.example.whispermind"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "126806768391-2grcvn7fogmhq89ok58djidom7n8ngun.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFaYWItlkC6b2gaGOaYVuCISgkROYab-g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "126806768391-2grcvn7fogmhq89ok58djidom7n8ngun.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "126806768391-bohb06i3pf12o13b6ivmrdv6jc2br3ol.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.whispermind"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
