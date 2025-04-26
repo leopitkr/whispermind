@@ -1,0 +1,9 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+- Ensure features work correctly on Web, Android, and iOS platforms.
+- Use only stable versions when installing packages or libraries.
+- Do not alter the overall UI/UX when adding or modifying features.
+- Respond in Korean if the question is asked in Korean.
