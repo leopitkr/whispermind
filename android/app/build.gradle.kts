@@ -8,7 +8,8 @@ plugins {
 android {
     namespace = "com.example.whispermind"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // NDK 버전 직접 지정
+    ndkVersion = "25.1.8937393" // 고정 버전 사용
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
