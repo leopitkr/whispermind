@@ -49,11 +49,11 @@ class UserModel {
     Map<String, dynamic>? preferences,
   }) {
     return UserModel(
-      uid: this.uid,
-      email: this.email,
+      uid: uid,
+      email: email,
       displayName: displayName ?? this.displayName,
       photoURL: photoURL ?? this.photoURL,
-      createdAt: this.createdAt,
+      createdAt: createdAt,
       preferences: preferences ?? this.preferences,
     );
   }
