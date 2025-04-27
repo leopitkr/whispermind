@@ -94,8 +94,9 @@ class JournalService {
     if (!doc.exists) throw Exception('Journal not found');
 
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    if (data['userId'] != userId)
+    if (data['userId'] != userId) {
       throw Exception('Not authorized to update this journal');
+    }
 
     // 업데이트 시간 추가
     Map<String, dynamic> updateData = journal.toMap();
@@ -115,8 +116,9 @@ class JournalService {
     if (!doc.exists) throw Exception('Journal not found');
 
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    if (data['userId'] != userId)
+    if (data['userId'] != userId) {
       throw Exception('Not authorized to delete this journal');
+    }
 
     // 일기 삭제
     await _journalsCollection.doc(journalId).delete();
