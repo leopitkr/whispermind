@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'core/theme/app_theme.dart';
-import 'features/home/bottom_navigation.dart';
 import 'providers/auth_provider.dart';
 import 'providers/journal_provider.dart';
+import 'router/app_router.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,13 +36,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => JournalProvider()),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
         title: 'WhisperMind',
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system, // 시스템 설정에 따라 테마 적용
         debugShowCheckedModeBanner: false,
-        home: const BottomNavigation(),
+        routerConfig: AppRouter.router,
       ),
     );
   }
