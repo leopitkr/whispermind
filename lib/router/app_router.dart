@@ -4,6 +4,8 @@ import '../features/home/bottom_navigation.dart';
 import '../features/home/home_screen.dart';
 import '../features/journal/journal_screen.dart';
 import '../features/time_capsule/time_capsule_screen.dart';
+import '../pages/auth/welcome_page.dart';
+import '../pages/auth/login_page.dart';
 import '../pages/diary/diary_list_page.dart';
 import '../pages/diary/diary_write_page.dart';
 import '../pages/diary/diary_detail_page.dart';
@@ -14,8 +16,18 @@ import '../models/location.dart';
 class AppRouter {
   /// GoRouter 인스턴스
   static final router = GoRouter(
-    initialLocation: '/',
+    initialLocation: '/auth/login',
     routes: [
+      // 로그인 화면
+      GoRoute(
+        path: '/auth/login',
+        builder: (context, state) => const LoginPage(),
+      ),
+      // 초기 진입 화면
+      GoRoute(
+        path: '/welcome',
+        builder: (context, state) => const WelcomePage(),
+      ),
       // 메인 라우트 (바텀 네비게이션)
       ShellRoute(
         builder: (context, state, child) => BottomNavigation(child: child),
