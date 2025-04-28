@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../home/home_screen.dart';
+import '../../pages/diary/diary_list_page.dart';
 
 class BottomNavigation extends StatefulWidget {
-  const BottomNavigation({super.key});
+  final Widget child;
+
+  const BottomNavigation({super.key, required this.child});
 
   @override
   State<BottomNavigation> createState() => _BottomNavigationState();
@@ -13,24 +17,35 @@ class BottomNavigation extends StatefulWidget {
 class _BottomNavigationState extends State<BottomNavigation> {
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const Placeholder(), // 일기 화면
-    const Placeholder(), // 타임캡슐 화면
-    const Placeholder(), // 통계 화면
-    const Placeholder(), // 더보기 화면
-  ];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+
+    // GoRouter를 사용하여 화면 전환
+    switch (index) {
+      case 0:
+        context.go('/');
+        break;
+      case 1:
+        context.go('/diary');
+        break;
+      case 2:
+        context.go('/time-capsule');
+        break;
+      case 3:
+        context.go('/statistics');
+        break;
+      case 4:
+        context.go('/more');
+        break;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: widget.child,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
@@ -69,6 +84,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // 감정 일기 작성 화면으로 이동
+          context.go('/diary/write');
         },
         backgroundColor: AppColors.lavender,
         child: const Icon(CupertinoIcons.add, color: AppColors.white),

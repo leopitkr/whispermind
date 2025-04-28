@@ -98,7 +98,7 @@ class FirebaseService {
     try {
       // 테스트 파일 데이터 생성
       final String testData =
-          'Hello Firebase Storage! 안녕하세요! ' + DateTime.now().toString();
+          'Hello Firebase Storage! 안녕하세요! ${DateTime.now()}';
       final Uint8List testBytes = Uint8List.fromList(utf8.encode(testData));
 
       // 파일 업로드

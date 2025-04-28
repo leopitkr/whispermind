@@ -18,9 +18,9 @@ class AppColors {
   // 중립 컬러
   static const Color white = Color(0xFFFFFFFF); // 화이트 - 배경, 카드
   static const Color offWhite = Color(0xFFF8F5FF); // 오프 화이트 - 세컨더리 배경
-  static const Color lightGray = Color(0xFFEFEAF7); // 라이트 그레이 - 구분선
-  static const Color midGray = Color(0xFFBBBAC1); // 미드 그레이 - 보조 텍스트
-  static const Color darkGray = Color(0xFF574B6A); // 다크 그레이 - 주요 텍스트
+  static const Color lightGray = Color(0xFFF5F5F5); // 라이트 그레이 - 구분선
+  static const Color midGray = Color(0xFF9E9E9E); // 미드 그레이 - 보조 텍스트
+  static const Color darkGray = Color(0xFF424242); // 다크 그레이 - 주요 텍스트
   static const Color night = Color(0xFF232038); // 나이트 - 다크 모드 배경
 
   // 그라데이션
@@ -86,4 +86,7 @@ class AppColors {
       offset: const Offset(0, 4),
     ),
   ];
+
+  static const Color primary = Color(0xFF6C63FF);
+  static const Color black = Color(0xFF000000);
 }

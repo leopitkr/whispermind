@@ -10,6 +10,7 @@ import 'providers/time_capsule_provider.dart';
 import 'router/app_router.dart';
 import 'services/firebase_service.dart';
 import 'services/emotion_tag_service.dart';
+import 'pages/diary/diary_list_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
