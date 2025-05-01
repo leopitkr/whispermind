@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/constants/text_styles.dart';
+import '../../core/constants/app_text_styles.dart';
 import '../../models/time_capsule_model.dart';
 import '../../providers/time_capsule_provider.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/constants/text_styles.dart';
+import '../../core/constants/app_text_styles.dart';
 
 class EmotionCard extends StatelessWidget {
   final String emotionName;

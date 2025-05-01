@@ -21,6 +21,7 @@ class LocationPicker extends StatefulWidget {
 class _LocationPickerState extends State<LocationPicker> {
   bool _isLoading = false;
   String? _error;
+  String? _currentAddress;
 
   Future<void> _getCurrentLocation() async {
     setState(() {
@@ -40,6 +41,7 @@ class _LocationPickerState extends State<LocationPicker> {
       );
 
       widget.onLocationSelect(location);
+      _currentAddress = location.address;
     } catch (e) {
       setState(() {
         _error = '위치를 가져오는 중 오류가 발생했습니다.';
@@ -56,7 +58,7 @@ class _LocationPickerState extends State<LocationPicker> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('위치', style: AppTextStyles.subtitle),
+        Text('위치', style: AppTextStyles.headingSmall),
         const SizedBox(height: 8),
         if (widget.location != null)
           Container(
@@ -69,7 +71,10 @@ class _LocationPickerState extends State<LocationPicker> {
               children: [
                 const Icon(Icons.location_on, color: AppColors.primary),
                 const SizedBox(width: 8),
-                Text(widget.location!.address ?? '', style: AppTextStyles.body),
+                Text(
+                  widget.location!.address ?? '',
+                  style: AppTextStyles.bodyMedium,
+                ),
               ],
             ),
           )
@@ -99,6 +104,14 @@ class _LocationPickerState extends State<LocationPicker> {
           Padding(
             padding: const EdgeInsets.only(top: 8),
             child: Text(_error!, style: AppTextStyles.error),
+          ),
+        if (_currentAddress != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(
+              '현재 위치: $_currentAddress',
+              style: AppTextStyles.bodyMedium,
+            ),
           ),
       ],
     );

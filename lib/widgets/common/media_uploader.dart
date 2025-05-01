@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/constants/text_styles.dart';
+import '../../core/constants/app_text_styles.dart';
 import '../../models/diary.dart';
 
 class MediaUploader extends StatefulWidget {

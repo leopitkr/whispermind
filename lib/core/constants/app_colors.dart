@@ -20,6 +20,8 @@ class AppColors {
   static const Color hope = Color(0xFF8BC34A); // 희망
   static const Color fear = Color(0xFF795548); // 두려움
   static const Color longing = Color(0xFF9C27B0); // 그리움
+  static const Color achievement = Color(0xFFFF9800); // 성취
+  static const Color gratitude = Color(0xFF4CAF50); // 감사
 
   // 그레이 스케일
   static const Color white = Color(0xFFFFFFFF);

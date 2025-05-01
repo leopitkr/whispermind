@@ -149,7 +149,7 @@ class _DiaryListPageState extends State<DiaryListPage> {
                                 const SizedBox(height: 8),
                                 Text(
                                   diary.content,
-                                  style: AppTextStyles.body,
+                                  style: AppTextStyles.bodyMedium,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),

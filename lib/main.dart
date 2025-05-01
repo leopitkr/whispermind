@@ -16,6 +16,7 @@ import 'pages/auth/login_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'services/diary_service.dart';
 import 'providers/diary_provider.dart';
+import 'providers/emotion_analytics_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -83,6 +84,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<JournalProvider>(
           create: (_) => JournalProvider(),
+        ),
+        ChangeNotifierProvider<EmotionAnalyticsProvider>(
+          create: (_) => EmotionAnalyticsProvider(),
         ),
         ChangeNotifierProvider<TimeCapsuleProvider>(
           create: (_) => TimeCapsuleProvider(),

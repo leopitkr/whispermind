@@ -44,7 +44,7 @@ class DiaryDetailPage extends StatelessWidget {
             ],
             Text(
               diary.content,
-              style: AppTextStyles.body.copyWith(height: 1.5),
+              style: AppTextStyles.bodyMedium.copyWith(height: 1.5),
             ),
             if (diary.tags.isNotEmpty) ...[
               const SizedBox(height: 16),

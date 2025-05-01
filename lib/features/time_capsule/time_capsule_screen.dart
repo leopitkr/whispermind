@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/constants/text_styles.dart';
+import '../../core/constants/app_text_styles.dart';
 import '../../providers/time_capsule_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/time_capsule_model.dart';

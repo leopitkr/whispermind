@@ -1,19 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/constants/text_styles.dart';
-
-class EmotionData {
-  final String date;
-  final String emotion;
-  final double intensity;
-
-  EmotionData({
-    required this.date,
-    required this.emotion,
-    required this.intensity,
-  });
-}
+import '../../core/constants/app_text_styles.dart';
+import '../../models/emotion_data.dart';
 
 class EmotionSummaryChart extends StatelessWidget {
   final List<EmotionData> emotions;
