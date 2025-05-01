@@ -23,10 +23,10 @@ class JournalService {
         .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snapshot) {
-          return snapshot.docs
-              .map((doc) => EmotionJournalModel.fromFirestore(doc))
-              .toList();
-        });
+      return snapshot.docs
+          .map((doc) => EmotionJournalModel.fromFirestore(doc))
+          .toList();
+    });
   }
 
   // 특정 기간의 감정 일기 가져오기
@@ -40,13 +40,12 @@ class JournalService {
     Timestamp startTimestamp = Timestamp.fromDate(startDate);
     Timestamp endTimestamp = Timestamp.fromDate(endDate);
 
-    QuerySnapshot querySnapshot =
-        await _journalsCollection
-            .where('userId', isEqualTo: userId)
-            .where('createdAt', isGreaterThanOrEqualTo: startTimestamp)
-            .where('createdAt', isLessThanOrEqualTo: endTimestamp)
-            .orderBy('createdAt', descending: true)
-            .get();
+    QuerySnapshot querySnapshot = await _journalsCollection
+        .where('userId', isEqualTo: userId)
+        .where('createdAt', isGreaterThanOrEqualTo: startTimestamp)
+        .where('createdAt', isLessThanOrEqualTo: endTimestamp)
+        .orderBy('createdAt', descending: true)
+        .get();
 
     return querySnapshot.docs
         .map((doc) => EmotionJournalModel.fromFirestore(doc))

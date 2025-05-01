@@ -4,23 +4,23 @@ import '../services/auth_service.dart';
 import '../models/user_model.dart';
 
 class AuthProvider extends ChangeNotifier {
-  final AuthService _authService = AuthService();
-
+  final AuthService _authService;
   User? _user;
   UserModel? _userModel;
   bool _isLoading = false;
-  String? _error;
+  String? _errorMessage;
+  bool _rememberMe = false;
 
-  // 상태 getter
+  AuthProvider(this._authService) {
+    _init();
+  }
+
   User? get user => _user;
   UserModel? get userModel => _userModel;
   bool get isLoading => _isLoading;
   bool get isAuthenticated => _user != null;
-  String? get error => _error;
-
-  AuthProvider() {
-    _init();
-  }
+  String? get errorMessage => _errorMessage;
+  bool get rememberMe => _rememberMe;
 
   // 초기화 함수
   Future<void> _init() async {
@@ -47,21 +47,21 @@ class AuthProvider extends ChangeNotifier {
     String displayName,
   ) async {
     _isLoading = true;
-    _error = null;
+    _errorMessage = null;
     notifyListeners();
 
     try {
-      await _authService.registerWithEmailAndPassword(
-        email,
-        password,
-        displayName,
+      await _authService.signUpWithEmailAndPassword(
+        email: email,
+        password: password,
+        displayName: displayName,
       );
       _isLoading = false;
       notifyListeners();
       return true;
     } catch (e) {
       _isLoading = false;
-      _error = _handleAuthError(e);
+      _errorMessage = e.toString();
       notifyListeners();
       return false;
     }
@@ -70,17 +70,29 @@ class AuthProvider extends ChangeNotifier {
   // 로그인
   Future<bool> login(String email, String password) async {
     _isLoading = true;
-    _error = null;
+    _errorMessage = null;
     notifyListeners();
 
     try {
-      await _authService.signInWithEmailAndPassword(email, password);
+      await _authService.setPersistence(_rememberMe);
+      final userCredential = await _authService.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      _user = userCredential.user;
+      _userModel = await _authService.getUserModel();
+
+      // 로그인 정보 저장
+      if (_rememberMe) {
+        await _authService.saveLoginInfo(email, password);
+      }
+
       _isLoading = false;
       notifyListeners();
       return true;
     } catch (e) {
       _isLoading = false;
-      _error = _handleAuthError(e);
+      _errorMessage = e.toString();
       notifyListeners();
       return false;
     }
@@ -89,12 +101,17 @@ class AuthProvider extends ChangeNotifier {
   // 로그아웃
   Future<void> logout() async {
     _isLoading = true;
+    _errorMessage = null;
     notifyListeners();
 
     try {
       await _authService.signOut();
+      // 로그아웃 시 저장된 로그인 정보 삭제
+      await _authService.clearSavedLoginInfo();
+      _rememberMe = false;
     } catch (e) {
-      _error = _handleAuthError(e);
+      _errorMessage = e.toString();
+      rethrow;
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -104,7 +121,7 @@ class AuthProvider extends ChangeNotifier {
   // 비밀번호 재설정
   Future<bool> resetPassword(String email) async {
     _isLoading = true;
-    _error = null;
+    _errorMessage = null;
     notifyListeners();
 
     try {
@@ -114,10 +131,45 @@ class AuthProvider extends ChangeNotifier {
       return true;
     } catch (e) {
       _isLoading = false;
-      _error = _handleAuthError(e);
+      _errorMessage = e.toString();
       notifyListeners();
       return false;
     }
+  }
+
+  // 자동 로그인 시도
+  Future<void> tryAutoLogin() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final isAutoLoginPossible = await _authService.checkAutoLogin();
+      if (isAutoLoginPossible) {
+        _user = _authService.currentUser;
+        _userModel = await _authService.getUserModel();
+      } else {
+        // 저장된 로그인 정보로 자동 로그인 시도
+        final loginInfo = await _authService.getSavedLoginInfo();
+        final email = loginInfo['email'];
+        final password = loginInfo['password'];
+
+        if (email != null && password != null) {
+          await login(email, password);
+        }
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // 로그인 상태 유지 설정
+  Future<void> setRememberMe(bool value) async {
+    _rememberMe = value;
+    await _authService.setPersistence(value);
+    notifyListeners();
   }
 
   // 오류 메시지 처리
@@ -139,5 +191,25 @@ class AuthProvider extends ChangeNotifier {
       }
     }
     return '오류가 발생했습니다: $e';
+  }
+
+  // 사용자 정보 업데이트
+  Future<bool> updateUserInfo(String displayName) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _authService.updateUserInfo(displayName);
+      _userModel = await _authService.getUserModel();
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
   }
 }

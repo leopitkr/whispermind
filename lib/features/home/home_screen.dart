@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/constants/text_styles.dart';
+import '../../core/constants/app_text_styles.dart';
 import '../../widgets/common/emotion_card.dart';
 import '../../widgets/common/activity_card.dart';
 import '../../widgets/common/activity_card_list.dart';
 import '../../widgets/common/emotion_summary_chart.dart';
+import '../../providers/auth_provider.dart';
+import 'bottom_navigation.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final userEmail = authProvider.user?.email ?? '';
+    final displayName =
+        authProvider.userModel?.displayName ??
+        userEmail.split('@')[0]; // 이메일에서 아이디 부분만 추출
+
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
@@ -34,15 +44,24 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text('안녕하세요, 홍길동님', style: AppTextStyles.bodyLarge),
+                        Text(
+                          '안녕하세요, $displayName님',
+                          style: AppTextStyles.bodyLarge,
+                        ),
                       ],
                     ),
-                    CircleAvatar(
-                      radius: 24,
-                      backgroundColor: AppColors.lavender.withOpacity(0.2),
-                      child: Icon(
-                        CupertinoIcons.person_fill,
-                        color: AppColors.deepPurple,
+                    GestureDetector(
+                      onTap: () {
+                        // 프로필 설정 페이지로 이동
+                        context.push('/profile');
+                      },
+                      child: CircleAvatar(
+                        radius: 24,
+                        backgroundColor: AppColors.lavender.withOpacity(0.2),
+                        child: Icon(
+                          CupertinoIcons.person_fill,
+                          color: AppColors.deepPurple,
+                        ),
                       ),
                     ),
                   ],

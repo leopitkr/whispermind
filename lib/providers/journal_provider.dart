@@ -152,8 +152,8 @@ class JournalProvider extends ChangeNotifier {
 
     try {
       // 기존 일기 로드
-      EmotionJournalModel? existingJournal = await _journalService
-          .getJournalById(journalId);
+      EmotionJournalModel? existingJournal =
+          await _journalService.getJournalById(journalId);
       if (existingJournal == null) {
         throw Exception('일기를 찾을 수 없습니다');
       }

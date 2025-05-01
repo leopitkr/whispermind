@@ -11,35 +11,22 @@ import 'router/app_router.dart';
 import 'services/firebase_service.dart';
 import 'services/emotion_tag_service.dart';
 import 'pages/diary/diary_list_page.dart';
+import 'services/auth_service.dart';
+import 'pages/auth/login_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'services/diary_service.dart';
+import 'providers/diary_provider.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    // Firebase 초기화
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
     print('Firebase 초기화 성공');
-
-    // Firestore 연결 테스트
-    await FirebaseService().testFirestoreConnection();
-    // 테스트 문서 정리
-    await FirebaseService().deleteTestDocument();
-
-    // 감정 태그 서비스 테스트
-    await testEmotionTagService();
-
-    // 아래 테스트 코드는 Firebase 콘솔 설정이 필요해서 일단 주석 처리
-    // // Firebase Auth 익명 로그인 테스트
-    // await FirebaseService().testAnonymousAuth();
-    // // 로그아웃 테스트
-    // await FirebaseService().testSignOut();
-
-    // // Firebase Storage 테스트
-    // await FirebaseService().testStorage();
   } catch (e) {
-    print('Firebase 초기화 또는 테스트 중 오류 발생: $e');
+    print('Firebase 초기화 오류: $e');
   }
 
   // 시스템 UI 설정
@@ -83,23 +70,39 @@ Future<void> testEmotionTagService() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => JournalProvider()),
-        ChangeNotifierProvider(create: (_) => TimeCapsuleProvider()),
+        Provider<AuthService>(create: (_) => AuthService()),
+        Provider<DiaryService>(create: (_) => DiaryService()),
+        ChangeNotifierProvider<AuthProvider>(
+          create: (context) => AuthProvider(context.read<AuthService>()),
+        ),
+        ChangeNotifierProvider<JournalProvider>(
+          create: (_) => JournalProvider(),
+        ),
+        ChangeNotifierProvider<TimeCapsuleProvider>(
+          create: (_) => TimeCapsuleProvider(),
+        ),
+        ChangeNotifierProvider<DiaryProvider>(
+          create: (context) => DiaryProvider(context.read<DiaryService>()),
+        ),
       ],
-      child: MaterialApp.router(
-        title: 'WhisperMind',
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system, // 시스템 설정에 따라 테마 적용
-        debugShowCheckedModeBanner: false,
-        routerConfig: AppRouter.router,
+      child: Builder(
+        builder: (context) {
+          final router = AppRouter.getRouter(context);
+
+          return MaterialApp.router(
+            title: 'WhisperMind',
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            routerConfig: router,
+            debugShowCheckedModeBanner: false,
+          );
+        },
       ),
     );
   }
