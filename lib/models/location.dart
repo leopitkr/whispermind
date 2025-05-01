@@ -28,4 +28,22 @@ class Location {
       'placeName': placeName,
     };
   }
+
+  factory Location.fromMap(Map<String, dynamic> map) {
+    return Location(
+      latitude: map['latitude'] ?? 0.0,
+      longitude: map['longitude'] ?? 0.0,
+      address: map['address'] as String?,
+      placeName: map['placeName'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'latitude': latitude,
+      'longitude': longitude,
+      'address': address,
+      'placeName': placeName,
+    };
+  }
 }

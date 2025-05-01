@@ -10,10 +10,11 @@ import '../pages/auth/profile_screen.dart';
 import '../pages/diary/diary_list_page.dart';
 import '../pages/diary/diary_write_page.dart';
 import '../pages/diary/diary_detail_page.dart';
-import '../models/diary.dart';
+import '../models/diary_model.dart';
 import '../models/location.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart' as app_auth;
+import '../providers/diary_provider.dart';
 
 /// 앱의 라우팅을 관리하는 클래스
 class AppRouter {
@@ -104,30 +105,34 @@ class AppRouter {
           path: '/diary/:id',
           builder: (context, state) {
             final diaryId = state.pathParameters['id']!;
-            // TODO: diaryId를 사용하여 일기 데이터를 가져오는 로직 구현
-            final mockDiary = Diary(
-              id: diaryId,
-              title: '오늘의 일기',
-              content:
-                  '오늘은 정말 좋은 하루였습니다. 아침에 일찍 일어나서 공원에서 산책을 했고, 점심에는 맛있는 음식을 먹었습니다. 오후에는 친구들과 만나서 즐거운 시간을 보냈습니다.',
-              createdAt: DateTime.now(),
-              updatedAt: DateTime.now(),
-              emotion: Emotion(
-                id: 'happy',
-                name: '행복',
-                emoji: '😊',
-                color: const Color(0xFFFFD700),
-              ),
-              emotionIntensity: 80,
-              tags: ['행복', '여행'],
-              location: Location(
-                latitude: 37.5665,
-                longitude: 126.9780,
-                address: '서울특별시 중구 세종대로 110',
-              ),
-              media: [],
+            final authProvider = Provider.of<app_auth.AuthProvider>(
+              context,
+              listen: false,
             );
-            return DiaryDetailPage(diary: mockDiary);
+            final diaryProvider = Provider.of<DiaryProvider>(
+              context,
+              listen: false,
+            );
+
+            // 일기 데이터 가져오기
+            final diary = diaryProvider.diaries.firstWhere(
+              (d) => d.id == diaryId,
+              orElse:
+                  () => DiaryModel(
+                    id: diaryId,
+                    userId: authProvider.user!.uid,
+                    title: '일기를 불러오는 중...',
+                    content: '',
+                    emotion: '',
+                    emotionIntensity: 0,
+                    tags: [],
+                    mediaUrls: [],
+                    createdAt: DateTime.now(),
+                    updatedAt: DateTime.now(),
+                  ),
+            );
+
+            return DiaryDetailPage(diary: diary);
           },
         ),
       ],

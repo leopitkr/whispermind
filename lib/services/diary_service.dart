@@ -80,19 +80,12 @@ class DiaryService {
   }
 
   // 사용자의 모든 일기 조회
-  Stream<List<DiaryModel>> getUserDiaries(String userId) {
+  Future<QuerySnapshot> getUserDiaries(String userId) async {
     try {
-      return _firestore
+      return await _firestore
           .collection(_collection)
           .where('userId', isEqualTo: userId)
-          .orderBy('createdAt', descending: true)
-          .snapshots()
-          .map(
-            (snapshot) =>
-                snapshot.docs
-                    .map((doc) => DiaryModel.fromFirestore(doc))
-                    .toList(),
-          );
+          .get();
     } catch (e) {
       print('Error getting user diaries: $e');
       rethrow;
