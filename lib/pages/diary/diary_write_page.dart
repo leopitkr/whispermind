@@ -7,6 +7,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/diary_provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_text_styles.dart';
+import '../../core/constants/api_keys.dart';
 import '../../models/diary.dart';
 import '../../models/location.dart';
 import '../../widgets/common/emotion_selector.dart';
@@ -70,13 +71,17 @@ class _DiaryWritePageState extends State<DiaryWritePage> {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final diaryProvider = Provider.of<DiaryProvider>(context, listen: false);
 
-      final success = await diaryProvider.createDiary(
+      final success = await diaryProvider.createDiaryWithAnalysis(
         userId: authProvider.user!.uid,
         title: _titleController.text.trim(),
         content: _contentController.text.trim(),
         emotion: _selectedEmotion,
         emotionIntensity: _emotionIntensity,
         tags: _tags,
+        mediaUrls: _media.map((m) => m.url).toList(),
+        location: _location?.toGeoPoint(),
+        locationAddress: _location?.address,
+        openAIApiKey: ApiKeys.openAI,
       );
 
       if (success && mounted) {
@@ -85,6 +90,42 @@ class _DiaryWritePageState extends State<DiaryWritePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(diaryProvider.errorMessage ?? '일기 저장 중 오류가 발생했습니다'),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  // 테스트용 샘플 감정분석 저장
+  Future<void> _saveSampleEmotionAnalysis() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final diaryProvider = Provider.of<DiaryProvider>(context, listen: false);
+      await diaryProvider.saveSampleEmotionAnalysis();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('테스트용 샘플 감정분석 데이터가 저장되었습니다.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('테스트 데이터 저장 실패: $e'),
+            backgroundColor: Colors.red,
           ),
         );
       }
@@ -171,6 +212,12 @@ class _DiaryWritePageState extends State<DiaryWritePage> {
       appBar: AppBar(
         title: const Text('일기 작성'),
         actions: [
+          // 테스트 버튼 (샘플 감정분석 데이터 저장)
+          IconButton(
+            icon: const Icon(Icons.bug_report),
+            tooltip: '테스트: 샘플 감정분석 저장',
+            onPressed: _isLoading ? null : _saveSampleEmotionAnalysis,
+          ),
           TextButton(
             onPressed: _isLoading ? null : _saveDiary,
             child:

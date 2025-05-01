@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Location {
   final double latitude;
   final double longitude;
@@ -45,5 +47,10 @@ class Location {
       'address': address,
       'placeName': placeName,
     };
+  }
+
+  /// FireStore의 GeoPoint로 변환
+  GeoPoint toGeoPoint() {
+    return GeoPoint(latitude, longitude);
   }
 }

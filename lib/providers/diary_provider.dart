@@ -55,6 +55,48 @@ class DiaryProvider extends ChangeNotifier {
     }
   }
 
+  // 일기 작성 (감정분석 포함)
+  Future<bool> createDiaryWithAnalysis({
+    required String userId,
+    required String title,
+    required String content,
+    required String emotion,
+    required int emotionIntensity,
+    List<String> tags = const [],
+    List<String> mediaUrls = const [],
+    GeoPoint? location,
+    String? locationAddress,
+    required String openAIApiKey,
+  }) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _diaryService.createDiaryAndAnalyze(
+        userId: userId,
+        title: title,
+        content: content,
+        emotion: emotion,
+        emotionIntensity: emotionIntensity,
+        tags: tags,
+        mediaUrls: mediaUrls,
+        location: location,
+        locationAddress: locationAddress,
+        openAIApiKey: openAIApiKey,
+      );
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = e.toString();
+      notifyListeners();
+      debugPrint('Error creating diary with analysis: $e');
+      return false;
+    }
+  }
+
   // 일기 수정
   Future<bool> updateDiary(DiaryModel diary) async {
     _isLoading = true;
@@ -157,5 +199,23 @@ class DiaryProvider extends ChangeNotifier {
   void clearError() {
     _errorMessage = null;
     notifyListeners();
+  }
+
+  // 테스트용 샘플 감정분석 저장
+  Future<void> saveSampleEmotionAnalysis() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _diaryService.saveSampleEmotionAnalysis();
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = e.toString();
+      notifyListeners();
+      rethrow;
+    }
   }
 }
