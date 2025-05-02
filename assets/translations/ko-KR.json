@@ -61,7 +61,8 @@
     "viewEntry": "일기 상세보기",
     "viewEmotionAnalysis": "감정분석 결과 보기",
     "detailedAnalysis": "상세 분석",
-    "noAnalysisAvailable": "이 일기에 대한 감정분석 결과가 없습니다."
+    "noAnalysisAvailable": "이 일기에 대한 감정분석 결과가 없습니다.",
+    "analyzedInDifferentLanguage": "이 내용은 {0}로 분석되었습니다. 앱 언어와 다를 수 있습니다."
   },
   "timeCapsule": {
     "title": "타임캡슐",

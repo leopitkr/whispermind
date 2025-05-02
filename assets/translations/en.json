@@ -1,0 +1,70 @@
+{
+  "app": {
+    "title": "WhisperMind",
+    "tagline": "AI-powered journaling for emotional healing and self-reflection"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "signup": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithApple": "Continue with Apple"
+  },
+  "diary": {
+    "title": "Diary",
+    "newEntry": "New Entry",
+    "editEntry": "Edit Entry",
+    "deleteEntry": "Delete Entry",
+    "date": "Date",
+    "mood": "Mood",
+    "content": "Content",
+    "save": "Save",
+    "cancel": "Cancel",
+    "emotionAnalysis": "Emotion Analysis",
+    "emotionIntensity": "Emotion Intensity",
+    "primaryEmotion": "Primary Emotion",
+    "emotionKeywords": "Emotion Keywords",
+    "patternIdentified": "Pattern Identified",
+    "recommendations": "Recommendations",
+    "analyzedInDifferentLanguage": "Analyzed in Different Language"
+  },
+  "settings": {
+    "title": "Settings",
+    "theme": "Theme",
+    "language": "Language",
+    "notification": "Notifications",
+    "account": "Account",
+    "about": "About",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "version": "Version",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "english": "English",
+    "korean": "Korean",
+    "profileSettings": "Profile Settings",
+    "securitySettings": "Security Settings",
+    "dataSettings": "Data Settings"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "save": "Save",
+    "done": "Done",
+    "next": "Next",
+    "back": "Back",
+    "search": "Search"
+  }
+} 

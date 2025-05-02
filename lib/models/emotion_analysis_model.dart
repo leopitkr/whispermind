@@ -11,13 +11,7 @@ class EmotionAnalysisModel {
   final List<String>? recommendations;
   final String? detailedAnalysis;
   final Timestamp createdAt;
-
-  // 원본 영어 텍스트를 저장할 필드들
-  final String? primaryEmotionEn;
-  final List<String>? emotionKeywordsEn;
-  final String? patternIdentifiedEn;
-  final List<String>? recommendationsEn;
-  final String? detailedAnalysisEn;
+  final String language; // 감정분석이 수행된 언어 코드 (en, ko)
 
   EmotionAnalysisModel({
     required this.id,
@@ -29,11 +23,7 @@ class EmotionAnalysisModel {
     this.recommendations,
     this.detailedAnalysis,
     required this.createdAt,
-    this.primaryEmotionEn,
-    this.emotionKeywordsEn,
-    this.patternIdentifiedEn,
-    this.recommendationsEn,
-    this.detailedAnalysisEn,
+    required this.language,
   });
 
   /// Firestore에서 데이터를 가져와 EmotionAnalysisModel 객체로 변환
@@ -53,18 +43,7 @@ class EmotionAnalysisModel {
               : null,
       detailedAnalysis: data['detailedAnalysis'],
       createdAt: data['createdAt'] ?? Timestamp.now(),
-      // 원본 영어 필드 로드
-      primaryEmotionEn: data['primaryEmotionEn'],
-      emotionKeywordsEn:
-          data['emotionKeywordsEn'] != null
-              ? List<String>.from(data['emotionKeywordsEn'])
-              : null,
-      patternIdentifiedEn: data['patternIdentifiedEn'],
-      recommendationsEn:
-          data['recommendationsEn'] != null
-              ? List<String>.from(data['recommendationsEn'])
-              : null,
-      detailedAnalysisEn: data['detailedAnalysisEn'],
+      language: data['language'] ?? 'en',
     );
   }
 
@@ -79,12 +58,7 @@ class EmotionAnalysisModel {
       'recommendations': recommendations,
       'detailedAnalysis': detailedAnalysis,
       'createdAt': createdAt,
-      // 원본 영어 필드 저장
-      'primaryEmotionEn': primaryEmotionEn,
-      'emotionKeywordsEn': emotionKeywordsEn,
-      'patternIdentifiedEn': patternIdentifiedEn,
-      'recommendationsEn': recommendationsEn,
-      'detailedAnalysisEn': detailedAnalysisEn,
+      'language': language,
     };
   }
 
@@ -97,11 +71,7 @@ class EmotionAnalysisModel {
     String? patternIdentified,
     List<String>? recommendations,
     String? detailedAnalysis,
-    String? primaryEmotionEn,
-    List<String>? emotionKeywordsEn,
-    String? patternIdentifiedEn,
-    List<String>? recommendationsEn,
-    String? detailedAnalysisEn,
+    required String language,
   }) {
     return EmotionAnalysisModel(
       id: '', // Firestore에 저장 시 자동 생성될 ID
@@ -113,12 +83,7 @@ class EmotionAnalysisModel {
       recommendations: recommendations,
       detailedAnalysis: detailedAnalysis,
       createdAt: Timestamp.now(),
-      // 원본 영어 필드
-      primaryEmotionEn: primaryEmotionEn,
-      emotionKeywordsEn: emotionKeywordsEn,
-      patternIdentifiedEn: patternIdentifiedEn,
-      recommendationsEn: recommendationsEn,
-      detailedAnalysisEn: detailedAnalysisEn,
+      language: language,
     );
   }
 }

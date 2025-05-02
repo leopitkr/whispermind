@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../models/diary_model.dart';
 import '../services/ai_service.dart';
 
@@ -171,7 +173,6 @@ class DiaryService {
       final docRef = _firestore.collection('emotion_analyses').doc();
       final data = {
         'journalId': journalId,
-        // 한국어 필드
         'primaryEmotion':
             analysis['primaryEmotion'] ?? analysis['emotion'] ?? '',
         'emotionKeywords': List<String>.from(
@@ -187,19 +188,7 @@ class DiaryService {
         ),
         'detailedAnalysis': analysis['detailedAnalysis'] ?? '',
         'createdAt': Timestamp.now(),
-
-        // 영어 원본 필드
-        'primaryEmotionEn': analysis['primaryEmotionEn'] ?? '',
-        'emotionKeywordsEn':
-            analysis['emotionKeywordsEn'] != null
-                ? List<String>.from(analysis['emotionKeywordsEn'])
-                : [],
-        'patternIdentifiedEn': analysis['patternIdentifiedEn'] ?? '',
-        'recommendationsEn':
-            analysis['recommendationsEn'] != null
-                ? List<String>.from(analysis['recommendationsEn'])
-                : [],
-        'detailedAnalysisEn': analysis['detailedAnalysisEn'] ?? '',
+        'language': analysis['language'] ?? 'en', // 언어 코드 저장
       };
 
       debugPrint('감정분석 데이터: $data');
@@ -215,6 +204,7 @@ class DiaryService {
   Future<void> analyzeLatestDiaryAndSave({
     required String userId,
     required String openAIApiKey,
+    BuildContext? context,
   }) async {
     final latestDiary = await fetchLatestDiary(userId);
     if (latestDiary == null) return;
@@ -223,9 +213,13 @@ class DiaryService {
     final diaryText = latestDiary['content'];
 
     // AIService를 통해 감정분석 요청
-    final aiService = AIService(apiKey: openAIApiKey);
+    final aiService = AIService(apiKey: openAIApiKey, context: context);
     final analysis = await aiService.analyzeEmotion(diaryText);
     if (analysis != null) {
+      // 현재 언어 코드 추가
+      final languageCode = context?.locale.languageCode ?? 'en';
+      analysis['language'] = languageCode;
+
       await saveEmotionAnalysis(diaryId, analysis);
     }
   }
@@ -242,6 +236,7 @@ class DiaryService {
     GeoPoint? location,
     String? locationAddress,
     required String openAIApiKey,
+    BuildContext? context,
   }) async {
     try {
       debugPrint('✨ 감정분석이 포함된 일기 저장 시작');
@@ -263,12 +258,17 @@ class DiaryService {
 
       // 2. 감정분석 요청
       debugPrint('2. OpenAI를 통한 감정분석 요청');
-      final aiService = AIService(apiKey: openAIApiKey);
+      final aiService = AIService(apiKey: openAIApiKey, context: context);
       final analysis = await aiService.analyzeEmotion(content);
 
       // 3. 감정분석 결과 저장
       if (analysis != null) {
         debugPrint('3. 감정분석 결과 저장');
+
+        // 현재 언어 코드 추가
+        final languageCode = context?.locale.languageCode ?? 'en';
+        analysis['language'] = languageCode;
+
         await saveEmotionAnalysis(diary.id, analysis);
         debugPrint('✅ 전체 과정 완료: 일기 저장 + 감정분석 + 결과 저장');
       } else {

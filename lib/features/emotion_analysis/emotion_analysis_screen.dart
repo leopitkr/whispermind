@@ -56,6 +56,10 @@ class EmotionAnalysisScreen extends StatelessWidget {
             snapshot.data!.docs.first,
           );
 
+          // 현재 UI 언어와 감정분석 언어가 동일한지 확인
+          final currentLocale = context.locale.languageCode;
+          final isMatchingLanguage = emotionAnalysis.language == currentLocale;
+
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -68,8 +72,8 @@ class EmotionAnalysisScreen extends StatelessWidget {
                 ),
                 _buildEmotionBadge(
                   context,
-                  koreanText: emotionAnalysis.primaryEmotion,
-                  englishText: emotionAnalysis.primaryEmotionEn ?? '',
+                  emotion: emotionAnalysis.primaryEmotion,
+                  isMatchingLanguage: isMatchingLanguage,
                 ),
                 const SizedBox(height: 24),
 
@@ -88,8 +92,8 @@ class EmotionAnalysisScreen extends StatelessWidget {
                 ),
                 _buildKeywords(
                   context,
-                  koreanKeywords: emotionAnalysis.emotionKeywords,
-                  englishKeywords: emotionAnalysis.emotionKeywordsEn ?? [],
+                  keywords: emotionAnalysis.emotionKeywords,
+                  isMatchingLanguage: isMatchingLanguage,
                 ),
                 const SizedBox(height: 24),
 
@@ -100,8 +104,8 @@ class EmotionAnalysisScreen extends StatelessWidget {
                 ),
                 _buildTextBlock(
                   context,
-                  koreanText: emotionAnalysis.patternIdentified ?? '',
-                  englishText: emotionAnalysis.patternIdentifiedEn ?? '',
+                  text: emotionAnalysis.patternIdentified ?? '',
+                  isMatchingLanguage: isMatchingLanguage,
                 ),
                 const SizedBox(height: 24),
 
@@ -112,14 +116,12 @@ class EmotionAnalysisScreen extends StatelessWidget {
                 ),
                 _buildRecommendations(
                   context,
-                  koreanRecommendations: emotionAnalysis.recommendations ?? [],
-                  englishRecommendations:
-                      emotionAnalysis.recommendationsEn ?? [],
+                  recommendations: emotionAnalysis.recommendations ?? [],
+                  isMatchingLanguage: isMatchingLanguage,
                 ),
 
                 // 상세 분석 (있는 경우)
-                if (emotionAnalysis.detailedAnalysis != null ||
-                    emotionAnalysis.detailedAnalysisEn != null) ...[
+                if (emotionAnalysis.detailedAnalysis != null) ...[
                   const SizedBox(height: 24),
                   _buildSectionHeader(
                     'diary.detailedAnalysis'.tr(),
@@ -127,8 +129,39 @@ class EmotionAnalysisScreen extends StatelessWidget {
                   ),
                   _buildTextBlock(
                     context,
-                    koreanText: emotionAnalysis.detailedAnalysis ?? '',
-                    englishText: emotionAnalysis.detailedAnalysisEn ?? '',
+                    text: emotionAnalysis.detailedAnalysis ?? '',
+                    isMatchingLanguage: isMatchingLanguage,
+                  ),
+                ],
+
+                // 분석 언어 표시 (언어가 다른 경우 알림)
+                if (!isMatchingLanguage) ...[
+                  const SizedBox(height: 24),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.amber),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.info_outline, color: Colors.amber),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'diary.analyzedInDifferentLanguage'.tr(
+                              args: [
+                                emotionAnalysis.language == 'ko'
+                                    ? '한국어'
+                                    : 'English',
+                              ],
+                            ),
+                            style: AppTextStyles.bodySmall,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ],
@@ -156,15 +189,9 @@ class EmotionAnalysisScreen extends StatelessWidget {
   // 감정 뱃지 위젯
   Widget _buildEmotionBadge(
     BuildContext context, {
-    required String koreanText,
-    required String englishText,
+    required String emotion,
+    required bool isMatchingLanguage,
   }) {
-    final emotionText = LanguageUtils.getLocalizedEmotionField(
-      context: context,
-      koreanField: koreanText,
-      englishField: englishText,
-    );
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
@@ -172,7 +199,7 @@ class EmotionAnalysisScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
-        emotionText,
+        emotion,
         style: AppTextStyles.bodyLarge.copyWith(
           color: AppColors.deepPurple,
           fontWeight: FontWeight.w600,
@@ -222,15 +249,9 @@ class EmotionAnalysisScreen extends StatelessWidget {
   // 감정 키워드 위젯
   Widget _buildKeywords(
     BuildContext context, {
-    required List<String> koreanKeywords,
-    required List<String> englishKeywords,
+    required List<String> keywords,
+    required bool isMatchingLanguage,
   }) {
-    final keywords = LanguageUtils.getLocalizedEmotionListField(
-      context: context,
-      koreanField: koreanKeywords,
-      englishField: englishKeywords,
-    );
-
     return Wrap(
       spacing: 8,
       runSpacing: 8,
@@ -250,15 +271,9 @@ class EmotionAnalysisScreen extends StatelessWidget {
   // 텍스트 블록 위젯
   Widget _buildTextBlock(
     BuildContext context, {
-    required String koreanText,
-    required String englishText,
+    required String text,
+    required bool isMatchingLanguage,
   }) {
-    final text = LanguageUtils.getLocalizedEmotionField(
-      context: context,
-      koreanField: koreanText,
-      englishField: englishText,
-    );
-
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -273,15 +288,9 @@ class EmotionAnalysisScreen extends StatelessWidget {
   // 추천사항 위젯
   Widget _buildRecommendations(
     BuildContext context, {
-    required List<String> koreanRecommendations,
-    required List<String> englishRecommendations,
+    required List<String> recommendations,
+    required bool isMatchingLanguage,
   }) {
-    final recommendations = LanguageUtils.getLocalizedEmotionListField(
-      context: context,
-      koreanField: koreanRecommendations,
-      englishField: englishRecommendations,
-    );
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children:

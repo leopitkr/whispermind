@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 class AIService {
   final String apiKey;
+  final BuildContext? context;
 
-  AIService({required this.apiKey});
+  AIService({required this.apiKey, this.context});
 
   Future<Map<String, dynamic>?> analyzeEmotion(String diaryText) async {
     const endpoint = 'https://api.openai.com/v1/chat/completions';
@@ -20,10 +23,17 @@ class AIService {
         return null;
       }
 
-      // 개선된 프롬프트 - 영어로 응답 요청 (인코딩 문제 방지)
+      // 현재 언어 설정 확인
+      final isKorean = context != null && context!.locale.languageCode == 'ko';
+
+      // 현재 언어 설정에 따라 프롬프트 언어 결정
+      final promptLanguage = isKorean ? 'Korean' : 'English';
+      final responseLanguage = isKorean ? 'Korean' : 'English';
+
+      // 프롬프트 구성
       final prompt = '''
 아래 일기 내용을 감정분석해서, 다음 JSON 형식으로 반환해주세요.
-응답은 반드시 영어로 작성해주세요(To avoid encoding issues, please respond in English):
+응답은 반드시 $responseLanguage로 작성해주세요(Please respond in $responseLanguage):
 
 {
   "primaryEmotion": "anger", // One main emotion (joy, sadness, anger, anxiety, hope)
@@ -36,7 +46,7 @@ class AIService {
 
 Please follow this JSON format exactly. Respond with ONLY the JSON, no other text.
 
-[Diary content in Korean]: "$diaryText"
+[Diary content in $promptLanguage]: "$diaryText"
 ''';
 
       final response = await http.post(
@@ -51,7 +61,7 @@ Please follow this JSON format exactly. Respond with ONLY the JSON, no other tex
             {
               "role": "system",
               "content":
-                  "You are an emotion analysis expert. Always respond in English with the exact JSON format requested.",
+                  "You are an emotion analysis expert. Always respond in $responseLanguage with the exact JSON format requested.",
             },
             {"role": "user", "content": prompt},
           ],
@@ -84,54 +94,32 @@ Please follow this JSON format exactly. Respond with ONLY the JSON, no other tex
           // JSON 파싱
           final Map<String, dynamic> parsedResult = jsonDecode(jsonStr);
 
-          // 영어 원본 필드 추출
-          final primaryEmotionEn = parsedResult['primaryEmotion'] ?? 'neutral';
-          final emotionKeywordsEn = List<String>.from(
-            parsedResult['emotionKeywords'] ?? ['neutral', 'calm', 'balanced'],
-          );
-          final patternIdentifiedEn =
-              parsedResult['patternIdentified'] ??
-              'No specific pattern identified.';
-          final recommendationsEn = List<String>.from(
-            parsedResult['recommendations'] ??
-                ['Take a deep breath and relax.'],
-          );
-          final detailedAnalysisEn =
-              parsedResult['detailedAnalysis'] ??
-              'No detailed analysis available.';
-
-          // 한국어로 번역된 값 생성
-          final primaryEmotionKo = _translateEmotionToKorean(
-            primaryEmotionEn.toString().toLowerCase(),
-          );
-          final emotionKeywordsKo =
-              emotionKeywordsEn
-                  .map(
-                    (keyword) =>
-                        _translateKeywordToKorean(keyword.toLowerCase()),
-                  )
-                  .toList();
-          final patternIdentifiedKo = '감정 패턴 분석: $patternIdentifiedEn';
-          final recommendationsKo = recommendationsEn;
-          final detailedAnalysisKo = '상세 분석: $detailedAnalysisEn';
-
-          // 결과 데이터 구성
+          // 필드 존재 확인 및 기본값 설정
           final result = {
-            // 한국어 필드
-            'primaryEmotion': primaryEmotionKo,
-            'emotionKeywords': emotionKeywordsKo,
+            'primaryEmotion':
+                parsedResult['primaryEmotion'] ?? (isKorean ? '중립' : 'neutral'),
+            'emotionKeywords': List<String>.from(
+              parsedResult['emotionKeywords'] ??
+                  (isKorean
+                      ? ['평온', '일상', '보통']
+                      : ['neutral', 'calm', 'balanced']),
+            ),
             'intensityScore':
                 (parsedResult['intensityScore'] ?? 0.5).toDouble(),
-            'patternIdentified': patternIdentifiedKo,
-            'recommendations': recommendationsKo,
-            'detailedAnalysis': detailedAnalysisKo,
-
-            // 영어 원본 필드
-            'primaryEmotionEn': primaryEmotionEn,
-            'emotionKeywordsEn': emotionKeywordsEn,
-            'patternIdentifiedEn': patternIdentifiedEn,
-            'recommendationsEn': recommendationsEn,
-            'detailedAnalysisEn': detailedAnalysisEn,
+            'patternIdentified':
+                parsedResult['patternIdentified'] ??
+                (isKorean
+                    ? '감정 패턴을 식별할 수 없습니다.'
+                    : 'No specific pattern identified.'),
+            'recommendations': List<String>.from(
+              parsedResult['recommendations'] ??
+                  (isKorean ? ['심호흡하기'] : ['Take a deep breath']),
+            ),
+            'detailedAnalysis':
+                parsedResult['detailedAnalysis'] ??
+                (isKorean
+                    ? '상세 분석을 제공할 수 없습니다.'
+                    : 'No detailed analysis available.'),
           };
 
           debugPrint('✅ 감정분석 최종 결과: $result');
@@ -141,69 +129,79 @@ Please follow this JSON format exactly. Respond with ONLY the JSON, no other tex
           debugPrint('원본 응답: $content');
 
           // 파싱 실패 시 기본값 반환
-          return {
-            // 한국어 기본값
-            'primaryEmotion': '기쁨',
-            'emotionKeywords': ['긍정', '행복', '만족'],
-            'intensityScore': 0.5,
-            'patternIdentified': '감정분석에 어려움이 있었지만, 일상적인 감정으로 보입니다.',
-            'recommendations': ['명상하기', '산책하기'],
-            'detailedAnalysis':
-                '감정분석 처리 과정에서 오류가 발생했습니다. 더 자세한 분석을 위해 다시 시도해주세요.',
-
-            // 영어 기본값
-            'primaryEmotionEn': 'joy',
-            'emotionKeywordsEn': ['positive', 'happy', 'satisfied'],
-            'patternIdentifiedEn':
-                'Analysis was difficult, but it seems to be an everyday emotion.',
-            'recommendationsEn': ['Meditate', 'Take a walk'],
-            'detailedAnalysisEn':
-                'An error occurred during the emotion analysis process. Please try again for a more detailed analysis.',
-          };
+          if (isKorean) {
+            return {
+              'primaryEmotion': '기쁨',
+              'emotionKeywords': ['긍정', '행복', '만족'],
+              'intensityScore': 0.5,
+              'patternIdentified': '감정분석에 어려움이 있었지만, 일상적인 감정으로 보입니다.',
+              'recommendations': ['명상하기', '산책하기'],
+              'detailedAnalysis':
+                  '감정분석 처리 과정에서 오류가 발생했습니다. 더 자세한 분석을 위해 다시 시도해주세요.',
+            };
+          } else {
+            return {
+              'primaryEmotion': 'joy',
+              'emotionKeywords': ['positive', 'happy', 'satisfied'],
+              'intensityScore': 0.5,
+              'patternIdentified':
+                  'Analysis was difficult, but it seems to be an everyday emotion.',
+              'recommendations': ['Meditate', 'Take a walk'],
+              'detailedAnalysis':
+                  'An error occurred during emotion analysis processing. Please try again for a more detailed analysis.',
+            };
+          }
         }
       } else {
         debugPrint('❌ GPT API 오류 (${response.statusCode}): ${response.body}');
         // 기본값 반환
-        return {
-          // 한국어 기본값
-          'primaryEmotion': '중립',
-          'emotionKeywords': ['평온', '일상', '보통'],
-          'intensityScore': 0.3,
-          'patternIdentified': 'API 오류로 정확한 분석이 어렵습니다. 일상적인 감정으로 간주합니다.',
-          'recommendations': ['심호흡하기', '휴식취하기'],
-          'detailedAnalysis': 'API 연결 문제로 감정분석이 완료되지 않았습니다. 나중에 다시 시도해주세요.',
-
-          // 영어 기본값
-          'primaryEmotionEn': 'neutral',
-          'emotionKeywordsEn': ['calm', 'everyday', 'normal'],
-          'patternIdentifiedEn':
-              'API error makes accurate analysis difficult. Considered as everyday emotion.',
-          'recommendationsEn': ['Take deep breaths', 'Rest'],
-          'detailedAnalysisEn':
-              'Emotion analysis was not completed due to API connection issues. Please try again later.',
-        };
+        if (isKorean) {
+          return {
+            'primaryEmotion': '중립',
+            'emotionKeywords': ['평온', '일상', '보통'],
+            'intensityScore': 0.3,
+            'patternIdentified': 'API 오류로 정확한 분석이 어렵습니다. 일상적인 감정으로 간주합니다.',
+            'recommendations': ['심호흡하기', '휴식취하기'],
+            'detailedAnalysis': 'API 연결 문제로 감정분석이 완료되지 않았습니다. 나중에 다시 시도해주세요.',
+          };
+        } else {
+          return {
+            'primaryEmotion': 'neutral',
+            'emotionKeywords': ['calm', 'everyday', 'normal'],
+            'intensityScore': 0.3,
+            'patternIdentified':
+                'API error makes accurate analysis difficult. Considered as everyday emotion.',
+            'recommendations': ['Take deep breaths', 'Rest'],
+            'detailedAnalysis':
+                'Emotion analysis was not completed due to API connection issues. Please try again later.',
+          };
+        }
       }
     } catch (e) {
       debugPrint('❌ 감정분석 과정에서 예외 발생: $e');
       // 기본값 반환
-      return {
-        // 한국어 기본값
-        'primaryEmotion': '중립',
-        'emotionKeywords': ['평온', '일상', '보통'],
-        'intensityScore': 0.3,
-        'patternIdentified': '분석 과정에서 오류가 발생했습니다. 기본값을 보여드립니다.',
-        'recommendations': ['심호흡하기', '음악 듣기'],
-        'detailedAnalysis': '감정분석 서비스 연결에 문제가 발생했습니다. 인터넷 연결을 확인하고 다시 시도해주세요.',
-
-        // 영어 기본값
-        'primaryEmotionEn': 'neutral',
-        'emotionKeywordsEn': ['calm', 'everyday', 'normal'],
-        'patternIdentifiedEn':
-            'An error occurred during analysis. Default values are shown.',
-        'recommendationsEn': ['Take deep breaths', 'Listen to music'],
-        'detailedAnalysisEn':
-            'There was a problem connecting to the emotion analysis service. Check your internet connection and try again.',
-      };
+      if (context != null && context!.locale.languageCode == 'ko') {
+        return {
+          'primaryEmotion': '중립',
+          'emotionKeywords': ['평온', '일상', '보통'],
+          'intensityScore': 0.3,
+          'patternIdentified': '분석 과정에서 오류가 발생했습니다. 기본값을 보여드립니다.',
+          'recommendations': ['심호흡하기', '음악 듣기'],
+          'detailedAnalysis':
+              '감정분석 서비스 연결에 문제가 발생했습니다. 인터넷 연결을 확인하고 다시 시도해주세요.',
+        };
+      } else {
+        return {
+          'primaryEmotion': 'neutral',
+          'emotionKeywords': ['calm', 'everyday', 'normal'],
+          'intensityScore': 0.3,
+          'patternIdentified':
+              'An error occurred during analysis. Default values are shown.',
+          'recommendations': ['Take deep breaths', 'Listen to music'],
+          'detailedAnalysis':
+              'There was a problem connecting to the emotion analysis service. Check your internet connection and try again.',
+        };
+      }
     }
   }
 

@@ -61,7 +61,8 @@
     "viewEntry": "Diary Details",
     "viewEmotionAnalysis": "View Emotion Analysis",
     "detailedAnalysis": "Detailed Analysis",
-    "noAnalysisAvailable": "No emotion analysis available for this diary entry."
+    "noAnalysisAvailable": "No emotion analysis is available for this diary entry.",
+    "analyzedInDifferentLanguage": "This content was analyzed in {0}. It may differ from your app language."
   },
   "timeCapsule": {
     "title": "Time Capsule",
