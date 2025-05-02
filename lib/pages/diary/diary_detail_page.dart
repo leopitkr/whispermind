@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../models/diary_model.dart';
 import 'package:intl/intl.dart';
 import '../../core/constants/app_colors.dart';
@@ -12,7 +14,19 @@ class DiaryDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('일기 상세', style: AppTextStyles.headingMedium)),
+      appBar: AppBar(
+        title: Text('diary.viewEntry'.tr(), style: AppTextStyles.headingMedium),
+        actions: [
+          // 감정분석 결과 버튼
+          IconButton(
+            icon: const Icon(Icons.psychology_outlined),
+            tooltip: 'diary.emotionAnalysis'.tr(),
+            onPressed: () {
+              context.push('/diary/${diary.id}/analysis');
+            },
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -72,6 +86,26 @@ class DiaryDetailPage extends StatelessWidget {
                     }).toList(),
               ),
             ],
+
+            // 감정분석 결과 바로가기
+            const SizedBox(height: 32),
+            Center(
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  context.push('/diary/${diary.id}/analysis');
+                },
+                icon: const Icon(Icons.psychology),
+                label: Text('diary.viewEmotionAnalysis'.tr()),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.deepPurple,
+                  side: BorderSide(color: AppColors.deepPurple),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

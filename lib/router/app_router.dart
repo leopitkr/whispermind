@@ -10,11 +10,13 @@ import '../pages/auth/profile_screen.dart';
 import '../pages/diary/diary_list_page.dart';
 import '../pages/diary/diary_write_page.dart';
 import '../pages/diary/diary_detail_page.dart';
+import '../pages/settings/settings_page.dart';
 import '../models/diary_model.dart';
 import '../models/location.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart' as app_auth;
 import '../providers/diary_provider.dart';
+import '../features/emotion_analysis/emotion_analysis_screen.dart';
 
 /// 앱의 라우팅을 관리하는 클래스
 class AppRouter {
@@ -90,10 +92,27 @@ class AppRouter {
               builder:
                   (context, state) => Scaffold(
                     appBar: AppBar(title: const Text('더보기')),
-                    body: const Center(child: Text('더보기 화면 준비 중')),
+                    body: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('더보기 화면'),
+                          const SizedBox(height: 20),
+                          ElevatedButton(
+                            onPressed: () => context.push('/settings'),
+                            child: const Text('설정'),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
             ),
           ],
+        ),
+        // 설정 화면
+        GoRoute(
+          path: '/settings',
+          builder: (context, state) => const SettingsPage(),
         ),
         // 일기 작성 화면
         GoRoute(
@@ -133,6 +152,14 @@ class AppRouter {
             );
 
             return DiaryDetailPage(diary: diary);
+          },
+        ),
+        // 감정분석 화면
+        GoRoute(
+          path: '/diary/:id/analysis',
+          builder: (context, state) {
+            final diaryId = state.pathParameters['id']!;
+            return EmotionAnalysisScreen(diaryId: diaryId);
           },
         ),
       ],

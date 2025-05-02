@@ -171,6 +171,7 @@ class DiaryService {
       final docRef = _firestore.collection('emotion_analyses').doc();
       final data = {
         'journalId': journalId,
+        // 한국어 필드
         'primaryEmotion':
             analysis['primaryEmotion'] ?? analysis['emotion'] ?? '',
         'emotionKeywords': List<String>.from(
@@ -184,7 +185,21 @@ class DiaryService {
         'recommendations': List<String>.from(
           analysis['recommendations'] ?? analysis['recommend'] ?? [],
         ),
+        'detailedAnalysis': analysis['detailedAnalysis'] ?? '',
         'createdAt': Timestamp.now(),
+
+        // 영어 원본 필드
+        'primaryEmotionEn': analysis['primaryEmotionEn'] ?? '',
+        'emotionKeywordsEn':
+            analysis['emotionKeywordsEn'] != null
+                ? List<String>.from(analysis['emotionKeywordsEn'])
+                : [],
+        'patternIdentifiedEn': analysis['patternIdentifiedEn'] ?? '',
+        'recommendationsEn':
+            analysis['recommendationsEn'] != null
+                ? List<String>.from(analysis['recommendationsEn'])
+                : [],
+        'detailedAnalysisEn': analysis['detailedAnalysisEn'] ?? '',
       };
 
       debugPrint('감정분석 데이터: $data');
