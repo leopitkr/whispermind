@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/diary_provider.dart';
 import '../../core/constants/app_colors.dart';
@@ -71,7 +72,15 @@ class _DiaryWritePageState extends State<DiaryWritePage> {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final diaryProvider = Provider.of<DiaryProvider>(context, listen: false);
 
-      final success = await diaryProvider.createDiaryWithAnalysis(
+      // 저장 버튼 텍스트 변경
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('diary.aiAnalyzingInProgress'.tr()),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+
+      final diaryId = await diaryProvider.createDiaryWithAnalysis(
         userId: authProvider.user!.uid,
         title: _titleController.text.trim(),
         content: _contentController.text.trim(),
@@ -84,8 +93,9 @@ class _DiaryWritePageState extends State<DiaryWritePage> {
         openAIApiKey: ApiKeys.openAI,
       );
 
-      if (success && mounted) {
-        context.go('/diary'); // 일기 리스트 페이지로 이동
+      if (diaryId != null && mounted) {
+        // AI 분석 결과 화면으로 이동
+        context.push('/diary/$diaryId/analysis');
       } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -222,12 +232,25 @@ class _DiaryWritePageState extends State<DiaryWritePage> {
             onPressed: _isLoading ? null : _saveDiary,
             child:
                 _isLoading
-                    ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text('diary.aiAnalyzing'.tr()),
+                      ],
                     )
-                    : const Text('저장'),
+                    : Text(
+                      'diary.saveAndAnalyze'.tr(),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
           ),
         ],
       ),

@@ -35,8 +35,8 @@
     "emotionIntensity": "감정 강도",
     "primaryEmotion": "주요 감정",
     "emotionKeywords": "감정 키워드",
-    "patternIdentified": "감정 패턴 분석",
-    "recommendations": "제안",
+    "patternIdentified": "감정 패턴",
+    "recommendations": "추천 활동",
     "selectEmotion": "감정 선택",
     "addTags": "태그 추가",
     "templateSelect": "템플릿 선택",
@@ -45,7 +45,13 @@
     "addVideo": "동영상 추가",
     "addAudio": "음성 추가",
     "selectMusic": "배경 음악 선택",
-    "aiAnalyzing": "감정을 분석 중입니다...",
+    "aiAnalyzing": "감정 분석 중...",
+    "aiAnalyzingInProgress": "AI가 감정을 분석하고 있습니다...",
+    "saveAndAnalyze": "저장 및 분석",
+    "analysisComplete": "분석 완료",
+    "aiInsight": "AI가 발견한 당신의 감정 상태입니다",
+    "activitySaved": "활동이 목록에 저장되었습니다",
+    "addToCalendar": "캘린더에 추가",
     "saveOptions": "저장 옵션",
     "filter": "필터",
     "search": "검색",
@@ -61,7 +67,7 @@
     "viewEntry": "일기 상세보기",
     "viewEmotionAnalysis": "감정분석 결과 보기",
     "detailedAnalysis": "상세 분석",
-    "noAnalysisAvailable": "이 일기에 대한 감정분석 결과가 없습니다.",
+    "noAnalysisAvailable": "이 일기에 대한 감정 분석 정보가 없습니다.",
     "analyzedInDifferentLanguage": "이 내용은 {0}로 분석되었습니다. 앱 언어와 다를 수 있습니다."
   },
   "timeCapsule": {
@@ -95,7 +101,8 @@
       "weekly": "주간",
       "monthly": "월간",
       "yearly": "연간",
-      "custom": "커스텀"
+      "custom": "커스텀",
+      "today": "오늘"
     },
     "compare": "비교",
     "insights": "인사이트",
@@ -225,24 +232,23 @@
     "more": "더보기"
   },
   "home": {
+    "greeting": {
+      "morning": "안녕하세요",
+      "afternoon": "즐거운 오후입니다",
+      "evening": "편안한 저녁입니다"
+    },
     "emotionalState": "오늘의 감정 상태",
     "recentEntries": "최근 일기",
     "recommendedActivities": "추천 활동",
-    "weeklyChart": "주간 감정 요약",
-    "upcomingEvents": "다가오는 이벤트",
-    "quickActions": "빠른 액션",
+    "upcomingAnniversaries": "다가오는 기념일",
+    "quickActions": "빠른 작업",
     "recordEmotion": "감정 기록",
-    "memoryAlbum": "추억 앨범",
-    "writeTimeCapsule": "타임캡슐 작성",
-    "emotionDiagnosis": "감정 진단",
-    "dashboard": "대시보드",
-    "todayFeeling": "오늘 기분이 어떠신가요?",
-    "greeting": {
-      "morning": "좋은 아침입니다",
-      "afternoon": "좋은 오후입니다",
-      "evening": "좋은 저녁입니다",
-      "night": "좋은 밤입니다"
-    }
+    "viewMemoryAlbum": "추억 앨범 보기",
+    "writeFutureLetter": "미래 편지 쓰기",
+    "takeAIDiagnosis": "AI 감정 진단",
+    "loading": "로딩 중...",
+    "tryAgain": "나중에 다시 시도해주세요",
+    "emotionSummary": "감정 요약"
   },
   "emotions": {
     "joy": "기쁨",
@@ -301,9 +307,9 @@
   },
   "common": {
     "loading": "로딩 중...",
-    "error": "오류",
+    "error": "오류가 발생했습니다",
     "retry": "다시 시도",
-    "success": "성공",
+    "success": "성공적으로 완료되었습니다",
     "warning": "경고",
     "info": "안내",
     "confirm": "확인",
@@ -337,7 +343,9 @@
     "termsOfService": "이용약관",
     "helpSupport": "도움말 및 지움",
     "feedback": "피드백",
-    "rateApp": "앱 평가"
+    "rateApp": "앱 평가",
+    "refresh": "새로고침",
+    "close": "닫기"
   },
   "errors": {
     "general": "문제가 발생했습니다",

@@ -46,6 +46,12 @@
     "addAudio": "Add Audio",
     "selectMusic": "Select Background Music",
     "aiAnalyzing": "Analyzing your emotions...",
+    "aiAnalyzingInProgress": "AI is analyzing your emotions...",
+    "saveAndAnalyze": "Save & Analyze",
+    "analysisComplete": "Analysis Complete",
+    "aiInsight": "Here's what AI discovered about your emotions",
+    "activitySaved": "Activity saved to your list",
+    "addToCalendar": "Add to Calendar",
     "saveOptions": "Save Options",
     "filter": "Filter",
     "search": "Search",
@@ -95,7 +101,8 @@
       "weekly": "Weekly",
       "monthly": "Monthly",
       "yearly": "Yearly",
-      "custom": "Custom"
+      "custom": "Custom",
+      "today": "Today"
     },
     "compare": "Compare",
     "insights": "Insights",
@@ -225,24 +232,23 @@
     "more": "More"
   },
   "home": {
-    "emotionalState": "Today's Emotional State",
-    "recentEntries": "Recent Entries",
-    "recommendedActivities": "Recommended Activities",
-    "weeklyChart": "Weekly Emotion Summary",
-    "upcomingEvents": "Upcoming Events",
-    "quickActions": "Quick Actions",
-    "recordEmotion": "Record Emotion",
-    "memoryAlbum": "Memory Album",
-    "writeTimeCapsule": "Write Time Capsule",
-    "emotionDiagnosis": "Emotion Diagnosis",
-    "dashboard": "Dashboard",
-    "todayFeeling": "How are you feeling today?",
     "greeting": {
       "morning": "Good morning",
       "afternoon": "Good afternoon",
-      "evening": "Good evening",
-      "night": "Good night"
-    }
+      "evening": "Good evening"
+    },
+    "emotionalState": "Today's Emotional State",
+    "recentEntries": "Recent Entries",
+    "recommendedActivities": "Recommended Activities",
+    "upcomingAnniversaries": "Upcoming Anniversaries",
+    "quickActions": "Quick Actions",
+    "recordEmotion": "Record Emotion",
+    "viewMemoryAlbum": "View Memory Album",
+    "writeFutureLetter": "Write Future Letter",
+    "takeAIDiagnosis": "Take AI Diagnosis",
+    "loading": "Loading...",
+    "tryAgain": "Please try again later",
+    "emotionSummary": "Emotion Summary"
   },
   "emotions": {
     "joy": "Joy",
@@ -337,7 +343,9 @@
     "termsOfService": "Terms of Service",
     "helpSupport": "Help & Support",
     "feedback": "Feedback",
-    "rateApp": "Rate App"
+    "rateApp": "Rate App",
+    "refresh": "Refresh",
+    "close": "Close"
   },
   "errors": {
     "general": "Something went wrong",
