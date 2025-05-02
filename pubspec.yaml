@@ -39,7 +39,10 @@ dependencies:
   google_fonts: ^6.1.0
   flutter_svg: ^2.0.9
   fl_chart: ^0.66.1
-  intl: ^0.18.1
+  intl: ^0.19.0
+  
+  # 다국어 지원
+  easy_localization: ^3.0.3
   
   # 상태 관리
   provider: ^6.0.5
@@ -65,6 +68,7 @@ dependencies:
   image_picker: ^1.1.2
   google_sign_in: ^6.3.0
   table_calendar: ^3.0.9
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -97,8 +101,10 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/animations/
+    - assets/translations/
     - assets/images/app_logo.png
     - assets/images/google_logo.png
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
